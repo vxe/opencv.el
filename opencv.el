@@ -31,6 +31,31 @@
   :group 'opencv
   :type 'string)
 
+(defcustom opencv:c++-file-extension "cc"
+  "The extension to add to generated source files."
+  :group 'opencv
+  :type 'string)
+
+(defcustom opencv:generated-source-filename "App"
+  "The extension to add to generated source files."
+  :group 'opencv
+  :type 'string)
+
+
+(defun opencv:hello-world-text ()
+  "Generate a minimal CMakeLists.txt in the current buffer."
+  (concat "#include <opencv2/core.hpp> \n#include <opencv2/imgproc.hpp> \n#include <opencv2/highgui.hpp>\n#include <iostream>\n\n\nint main(int argc, char **argv){\n    std::cout << \"Number of arguments: \" << argc << std::endl;\n    for(size_t i = 0; i < argc; i++)\n        std::cout << \"  Argument \" << i << \" = '\" << argv[i] << \"'\" << std::endl;\n}\n"))
+
+(defun opencv:cmake-template ()
+  "Generate a minimal CMakeLists.txt in the current buffer."
+  (concat
+   "cmake_minimum_required(VERSION " opencv:minimum-version ")\n
+set (CMAKE_CXX_STANDARD 11)\n
+project( DisplayImage )\n
+find_package( OpenCV REQUIRED )\n
+add_executable( DisplayImage " opencv:generated-source-filename ")\n
+target_link_libraries( DisplayImage ${OpenCV_LIBS} )"))
+
 (defun opencv:gen-cmake-file ()
   "Generate a minimal CMakeLists.txt in the current buffer."
   (interactive)
@@ -42,6 +67,18 @@ find_package( OpenCV REQUIRED )\n
 add_executable( DisplayImage hello.cc)\n
 target_link_libraries( DisplayImage ${OpenCV_LIBS} )")))
 
+
+(defun opencv:project-template (project-name)
+  "Template a basic opencv project named PROJECT-NAME with the file ENTRY-POINT configured such that it will compile."
+  (interactive "sproject-name: ")
+  (shell-command (concat "mkdir -p " project-name))
+  (with-temp-buffer
+    (let ((program-text (opencv:hello-world-text))
+          (template (opencv:cmake-template)))
+      (cd project-name)
+      (shell-command (concat "touch " opencv:generated-source-filename "." opencv:c++-file-extension))
+      (f-write template  'utf-8 "CMakeLists.txt")
+      (f-write program-text 'utf-8 (concat opencv:generated-source-filename "." opencv:c++-file-extension)))))
 
 
 (provide 'opencv)
