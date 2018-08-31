@@ -15,7 +15,7 @@
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
+;; GNU General Public License for more details.*
 
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
@@ -25,6 +25,22 @@
 ;; tools for interaction with a system installation of opencv
 
 ;;; Code:
+
+(defcustom opencv:minimum-version "2.8"
+  "Where to put newly created notes."
+  :group 'opencv
+  :type 'string)
+
+(defun opencv:gen-cmake-file ()
+  "Generate a minimal CMakeLists.txt in the current buffer."
+  (interactive)
+  (insert (concat
+           "cmake_minimum_required(VERSION " opencv:minimum-version ")\n
+set (CMAKE_CXX_STANDARD 11)\n
+project( DisplayImage )\n
+find_package( OpenCV REQUIRED )\n
+add_executable( DisplayImage hello.cc)\n
+target_link_libraries( DisplayImage ${OpenCV_LIBS} )")))
 
 
 
