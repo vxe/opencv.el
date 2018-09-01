@@ -42,6 +42,12 @@
   :type 'string)
 
 
+(defun opencv:display-file-text ()
+  "Source text for the image display example."
+  (interactive)
+  (insert
+   (concat "#include <opencv2/opencv.hpp> //Include file for every supported OpenCV function\n\nint main( int argc, char** argv ) {\n  cv::Mat img = cv::imread(argv[1],-1);\n  if( img.empty() ) return -1;\n  cv::namedWindow( \"Example 2-1\", cv::WINDOW_AUTOSIZE );\n  cv::imshow( \"Example 2-1\", img );\n  cv::waitKey( 0 );\n  cv::destroyWindow( \"Example 2-1\" );\n  return 0;\n}\n")))
+
 (defun opencv:hello-world-text ()
   "Generate a minimal CMakeLists.txt in the current buffer."
   (concat "#include <opencv2/core.hpp> \n#include <opencv2/imgproc.hpp> \n#include <opencv2/highgui.hpp>\n#include <iostream>\n\n\nint main(int argc, char **argv){\n    std::cout << \"Number of arguments: \" << argc << std::endl;\n    for(size_t i = 0; i < argc; i++)\n        std::cout << \"  Argument \" << i << \" = '\" << argv[i] << \"'\" << std::endl;\n}\n"))
